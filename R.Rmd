@@ -1,0 +1,153 @@
+---
+title: "Has the Mean Annual Temperature in Australia Increased Over the Past 100 years?"
+author: "Ashley Mallia s******* and Daniel Evans s3766654"
+date: "02/06/2019"
+output:
+  slidy_presentation:
+    df_print: paged
+    font_adjustment: -1
+    highlight: haddock
+    mathjax: default
+  ioslides_presentation:
+    highlight: haddock
+  beamer_presentation:
+    highlight: haddock
+subtitle: A statistical investigation conducted by
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(
+	fig.align = "center",
+	message = FALSE,
+	warning = FALSE
+)
+
+library(ggplot2)
+library(dplyr)  
+library(knitr) 
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(broom)
+```
+
+# RPubs link information
+
+- Rpubs link comes here: www.........
+
+# Introduction
+- “Averaged over all land and ocean surfaces, temperatures have warmed roughly 1.33°F (0.74ºC) over the last century, according to the Intergovernmental Panel on Climate Change (xxxx,11). ”
+- There is no more relevant field to investigate than climate change at this moment
+- This is due to the drastic and immediate changes that are required on a global scale to curb the effects we are having on our climate
+- An increase of 0.74ºC may seem insignificant yet an increase such as this can have devastating effects on our climate 
+-  How much of this increase in temperature can be attributed to human effects and not just natural fluctuations in climate?
+- “The extent of the human contribution to modern global warming is a hotly debated topic in political circles (xxxx,22). ”
+-  The general scientific consensus is that “Humans emissions and activities have caused around 100% of the warming observed since 1950, according to the Intergovernmental Panel on Climate Change (xxxx, 22).”
+
+
+
+# Problem Statement
+
+- With more and more global recognition that our climate is changing for the worse, we thought it appropriate to determine if Australia’s mean annual temperature had increased in the past 100 years.
+- In order to do this, we will compare the mean annual temperature in Australia from 1975 -  2015 to 1910 - 1950.
+- We will then conduct a paired samples t-test to determine if the difference in temperatures (if there is any) is statistically significant. 
+- Our null hypothesis assumes there is no difference in means, while the alternative hypothesis states the opposite.
+- **TALK ABOUT LINEARITY?**
+
+
+# Data
+- Talk
+- About
+- The
+- Data 
+- Here
+
+
+# Descriptive Statistics and Visualisation
+
+```{r}
+allmonths <- read_csv("temp.csv", col_types = cols(Year = col_integer()))
+x <- allmonths %>% group_by(Year) %>% nest() %>% mutate(
+    mean = map(data, rowMeans),
+    sd   = map(data, sd),
+    lo   = map(data, ~ t.test(.x %>% as.numeric) %>% tidy %>% .$conf.low),
+    hi   = map(data, ~ t.test(.x %>% as.numeric) %>% tidy %>% .$conf.high),
+    pv   = map(data, ~ t.test(.x %>% as.numeric) %>% tidy %>% .$p.value)) %>% unnest(mean, sd, lo, hi, pv) %>% 
+  mutate(zero = pv < 0.05)
+head(x)
+```
+
+# Descriptive Statistics and Visualisation Cont
+
+```{r}
+t <- x %>% select(Year, mean) %>% filter(between(Year, 1910, 1950) | between(Year, 1975, 2015))
+before <- t %>% filter(Year <= 1950)
+after <- t %>% filter(Year > 1950)
+table1910_1950 <- before %>% summarise(Min = min(mean, na.rm = TRUE), Q1 = quantile(mean, probs = .25, 
+na.rm = TRUE), Median = median(mean, na.rm = TRUE), Q3 = quantile(mean, probs = .75, na.rm = TRUE),Max = max(mean, na.rm = TRUE),Mean = mean(mean, na.rm = TRUE), SD = sd(mean, na.rm = TRUE),n = n(),Missing = sum(is.na(mean)))
+table1975_2015 <- after %>% summarise(Min = min(mean, na.rm = TRUE),Q1 = quantile(mean, probs = .25, 
+na.rm = TRUE),Median = median(mean, na.rm = TRUE),Q3 = quantile(mean, probs = .75, na.rm = TRUE),Max = max(mean, na.rm = TRUE),Mean = mean(mean, na.rm = TRUE),SD = sd(mean, na.rm = TRUE),n = n(),Missing = sum(is.na(mean)))
+knitr::kable(table1910_1950)
+knitr::kable(table1975_2015)
+```
+
+# Descriptive Statistics and Visualisation Cont
+
+- **Insert plot you were talking about which shows the difference in means**
+- **State important statistics (diff in means etc.)**
+
+# Hypothesis Testing
+
+- **Null** hypothesis states there is **no** statistically significant difference in means:
+$$ H_0 : \mu_\Delta = 0 $$
+- **Alternative** hypothesis states there **is** a statistically significant difference in means:
+$$ H_A : \mu_\Delta \neq 0 $$
+- Significance level $\alpha = 0.05$ 
+- Assumptions:
+    - This data is continuous 
+    - The sample is representative of the population
+    - The sample size is large enough for CLT to be effective
+        - n = 41 for each group
+    - The difference in the population means is approximately normally distributed as shown in qqplot on next slide
+
+# Hypothesis Testing Cont.
+- **Normality plot here**
+
+- Decision Rules 
+    - **Reject $H_0$** if
+        - p-value < 0.05 (the significance level $\alpha$) 
+        - 95% CI of the mean difference does not capture $H_0 : \mu_\Delta = 0$
+    - Otherwise **Fail to Reject $H_0$** 
+
+# T-test
+```{r}
+t.test(after$mean, before$mean,  paired = TRUE, alternative = "two.sided")
+```
+- Interpretation:
+    - Mean difference in temperature from 1975-2015 compared to            1920-1950 was found to be 0.79 (SD = ?) 
+    - Paired samples t-test found a statistically significant mean         difference in temperature, t (df=40) = 10.51, p < 0.001, 95%         [0.64, 0.94]
+    - According to the data, the annual temperature in Australia has       significantly increased over the past 100 years by a mean value       of 0.79ºC
+
+# Test for Linearity
+```{r}
+l <- lm(mean ~ Year, data = x)
+summary(l)
+```
+
+# Test for Linearity Cont.
+```{r}
+plot(x$Year, x$mean, type="h")
+abline(l)
+```
+
+# Test for Linearity Cont.
+- Interpretation:
+
+# Discussion
+
+# References
+
+-https://globalclimate.ucr.edu/resources.html
+
+-https://www.carbonbrief.org/analysis-why-scientists-think-100-of-global-warming-is-due-to-humans
