@@ -16,6 +16,12 @@ To answer question 3, we will use the regression model to predict in what years 
 
 ## Table of Contents
 1. Data
+2. Descriptive Statistics and Visualisation
+3. Hypothesis Testing 
+4. Prediction
+5. Discussion
+6. References
+{:toc}
 
 
 ## Data
@@ -39,8 +45,7 @@ Our dataset is the Australian Monthly Temperature Anomalies (or departures from 
 allmonths <- read_csv("data/allmonths.csv", col_types = cols(Year = col_integer()))
 allmonths <- allmonths %>% gather(Month, Temp, Jan:Dec, factor_key = T) %>% arrange(Year, Month) (allmonths <- allmonths %>% filter(Year != 2019))
 ```
-
-IMAGE1
+<img width="777" alt="ONE" src="https://user-images.githubusercontent.com/65587875/101104894-463a2080-3620-11eb-802f-1c43f312d205.png">
 
 ## Descriptive Statistics and Visualisation
 
@@ -63,7 +68,7 @@ Q3 + 1.5*IQR,
 arrange(Years) %>% modify_if(is.numeric, round, 2) %>% kable
 ```
 
-IMAGE 2
+<img width="785" alt="TWO" src="https://user-images.githubusercontent.com/65587875/101104892-45a18a00-3620-11eb-898a-f25605a9bc86.png">
 
 ```
 before.label = paste0(before.range, "\nMEAN ", round(mean(before$Temp),2), "°C") after.label = paste0(after.range, "\nMEAN ", round(mean(after$Temp),2), "°C") abdiff.label = paste0("DIFFERENCE\n", round(mean(after$Temp-before$Temp),2), "°C")
@@ -71,7 +76,7 @@ ggplot(group, aes(x = Years, y = Temp)) + theme_bw() +
 ggtitle("F1 Australian Monthly Temperature Anomalies (boxplot)") + geom_boxplot(outlier.colour = "red")
 ```
 
-IMAGE 3
+<img width="595" alt="THREE" src="https://user-images.githubusercontent.com/65587875/101104888-44705d00-3620-11eb-9d90-d33261dbc831.png">
 
 ```
 ggplot() + theme_bw() +
@@ -90,7 +95,7 @@ stat_function(aes(x = after$Temp), fun = function(x) dnorm(x, mean(after$Temp), 
 annotate(geom="text", x=2, y=.5, label=after.label, color="red")
 ```
 
-IMAGE 4
+<img width="590" alt="FOUR" src="https://user-images.githubusercontent.com/65587875/101104887-433f3000-3620-11eb-9b0c-9f51736684d3.png">
 
 ```
 allyears <- allmonths %>% group_by(Year) %>% summarise(Temp = mean(Temp))
@@ -99,7 +104,7 @@ geom_segment() + scale_color_identity() +
 geom_smooth(aes(x=Year, y=Temp), method = "lm", col = "orange", se=F)
 ```
 
-IMAGE 5
+<img width="606" alt="FIVE" src="https://user-images.githubusercontent.com/65587875/101104884-42a69980-3620-11eb-976c-9b763119b4b9.png">
 
 The summary statistics show:
 - Mean temperature from 1910-1950 is -0.43°C while mean temperature from 1978-2018 is 0.46°C 
@@ -213,7 +218,7 @@ Coefficients 99% Confidence Intervals: 0.5 % 99.5 %
 (Intercept) -30.726 -19.586 Year 0.010 0.016
 ```
 
-IMAGE6
+<img width="587" alt="SIX" src="https://user-images.githubusercontent.com/65587875/101104877-3f131280-3620-11eb-9b01-8905905e082a.png">
 
 - Diagnostic Plots: Normality of residuals OK, Linearity OK, Homoscedasticity OK, No influential outliers OK
 - Overall Model: f(1,107) = 139.9, p < 0.001. Reject null hypothesis
