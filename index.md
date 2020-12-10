@@ -26,9 +26,8 @@ To answer question 3, we will use the regression model to predict in what years 
 
 ## Data
 
-Our data source is the ACORN-SAT (Australian Climate Observations Reference Network-Surface Air Temperature) homogeneous temperature timeseries accessable through the Bureau of Meteorology (Ref 1).
-The BoM collects the ACORN-SAT temperature data from a network of recording stations. They apply advanced statistical techniques to properly normalize and weight this data into daily and monthly averages.
-Our dataset is the Australian Monthly Temperature Anomalies (or departures from the 1961–1990 average (21.8°C)) for the time period Jan-1910 to Apr-2019.
+Our data source is the ACORN-SAT (Australian Climate Observations Reference Network-Surface Air Temperature) homogeneous temperature timeseries accessable through the [Bureau of Meteorology](http://www.bom.gov.au/climate/change/#tabs=Tracker&tracker=timeseries&tQ=graph%3Dtmean%26area%3Daus%26season%3Dallmonths%26ave_yr).
+The BoM collects the ACORN-SAT temperature data from a network of recording stations. They apply advanced statistical techniques to properly normalize and weight this data into daily and monthly averages. The dataset is the Australian Monthly Temperature Anomalies (or departures from the 1961–1990 average (21.8°C)) for the time period Jan-1910 to Apr-2019.
 
 #### Data Variables
 
@@ -38,8 +37,8 @@ Our dataset is the Australian Monthly Temperature Anomalies (or departures from 
 
 #### Preprocessing
 
-1. The datasource was supplied in wide format. We used tidyr::gather to convert this into long format 
-2. We exclude the Year 2019, since it is an incomplete year
+1. The datasource was supplied in wide format. I used tidyr::gather to convert this into long format 
+2. I exclude the Year 2019, since it is an incomplete year
 
 ```
 allmonths <- read_csv("data/allmonths.csv", col_types = cols(Year = col_integer()))
@@ -120,14 +119,14 @@ Fig 3 shows:
 
 ## Hypothesis Testing 
 
-Due to our large sample size we choose to use a significance level of alpha = 0.01
+Due to the large sample size I choose to use a significance level of alpha = 0.01
 
 ### Hypotheses Testing - Two Sample t-Test
 
 #### Hypothesis
 
-null hypothesis: mu1 - mu2 = 0
-alternate hypothesis: mu1 - mu2 != 0
+- null hypothesis: mu1 - mu2 = 0
+- alternate hypothesis: mu1 - mu2 != 0
 
 #### Assumptions
 
@@ -161,17 +160,17 @@ mean of x mean of y 0.4648374 -0.4289431
 
 - t(df=982) = 18.338, p < 0.001, 99% CI [0.77, 1.02]
 - Actual mean difference mu1 - mu2 = 0.894
-- Given these findings we reject the null hypothesis
+- Given these findings I **reject the null hypothesis**
 
-The data provides evidence to conclude that the mean temperature from 1910-1950 does differ to a statistically significant degree from the mean temperature from 1978-2018
+**The data provides evidence to conclude that the mean temperature from 1910-1950 does differ to a statistically significant degree from the mean temperature from 1978-2018**
 
 ### Hypotheses Testing - Linear Regression: Overall Model
 
 #### Hypotheses
 
-null hypothesis: The data does not fit the linear regression model
-alternate hypothesis: The data fits the linear regression model
-Test model parameters using F-test
+- null hypothesis: The data does not fit the linear regression model
+- alternate hypothesis: The data fits the linear regression model
+- Test model parameters using F-test
 
 #### Assumptions
 
@@ -239,7 +238,7 @@ Temp = 1.5
 Year = 2084
 ```
 
-The linear model predicts (based on current data) that we will see global warming of 1.5°C in 2084.
+**The linear model predicts (based on current data) that we will see global warming of 1.5°C in 2084.**
 
 ## Discussion
 
@@ -250,14 +249,14 @@ This research has answered the questions posed in the problem statement.
 
 Strengths and limitations:
 
-A strength of our analysis were our large sample size, clear analysis and beautiful visulisations. A limitation is that we were only able to model linear regression relationships, since even basic climate models are both non-linear and multivariate.
+A strength of the analysis was the large sample size. A limitation was that I was only able to model linear regression relationships. This is a limitation in that even basic climate models are both non-linear and multivariate.
 
 Future investigation:
 
-While we have showed that there has been a statisticlly significant temperature increase, we have not performed a comparison to correlation to the cause. It would be insightful to perform an analysis between temperature and atmospheric CO2. Using more advanced non-linear and multivarite statistical methods would be able to find relationships that simple linear regression cannot.
+While I have showed that there has been a statisticlly significant temperature increase, I have not performed a comparison to correlation to the cause. It would be insightful to perform an analysis between temperature and atmospheric CO2. Using more advanced non-linear and multivarite statistical methods would be able to find relationships that simple linear regression cannot.
 
 ## References
-1. Australian climate variability & change http://www.bom.gov.au/climate/change/#tabs=Tracker&tracker=timeseries&tQ=graph%3Dtmean%26area%3Daus%26season%3Dallmonths%26ave_yr (http://www.bom.gov.au/climate/change/#tabs=Tracker&tracker=timeseries&tQ=graph%3Dtmean%26area%3Daus%26season%3Dallmonths%26ave_y
+1. Australian climate variability & change [http://www.bom.gov.au/climate/change/#tabs=Tracker&tracker=timeseries&tQ=graph%3Dtmean%26area%3Daus%26season%3Dallmonths%26ave_yr] (http://www.bom.gov.au/climate/change/#tabs=Tracker&tracker=timeseries&tQ=graph%3Dtmean%26area%3Daus%26season%3Dallmonths%26ave_yr)
 
 
 
